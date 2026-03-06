@@ -1,0 +1,34 @@
+#!/bin/bash
+#SBATCH -J var_call
+#SBATCH -A acf-utk0032
+#SBATCH --partition=condo-ut-genomics
+#SBATCH --qos=genomics
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=4G
+#SBATCH --time=2-00:00:00
+#SBATCH --error=logs/job.e%J
+#SBATCH --output=logs/job.o%J
+#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-user=rkuster@utk.edu
+
+module load nextflow/23.10.0
+
+export NXF_OPTS="-Xms500M -Xmx2G"
+export NXF_ANSI_LOG=false
+
+source config
+
+nextflow ~/nextflow/vary_cool/main.nf \
+    --publish_dir $RESULTS \
+    --input ${DATA}/novogene_sequences_2024/fastp_trimmed/pangenome_metadata.csv 
+    --genome ${DATA}/reference/fortune_primary_v1.4.0_chrs.fasta \
+    --skip_qc true \
+    --skip_trim true \
+    --skip_mark_dupe false \
+    --aligner bwa_mem \
+    --ploidy 2 \
+    --caller bcftools \
+    --bp_intervals 10000000 \
+    -profile slurm,custom \
+    -resume

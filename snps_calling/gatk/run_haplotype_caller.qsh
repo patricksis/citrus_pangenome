@@ -1,0 +1,32 @@
+#!/bin/bash
+#SBATCH -J var_call
+#SBATCH -A acf-utk0032
+#SBATCH --partition=short
+#SBATCH --qos=short
+#SBATCH --nodes=1
+#SBATCH --ntasks=2
+#SBATCH --time=0-02:00:00
+#SBATCH --error=job.e%J
+#SBATCH --output=job.o%J
+
+module load nextflow/23.10.0
+
+export NXF_OPTS="-Xms500M -Xmx2G"
+export NXF_ANSI_LOG=false
+
+proj_dir="${PWD%/*}"
+
+sed "s|fullpath|$proj_dir|g" metadata_placeholder.csv > metadata.csv
+
+nextflow ~/nextflow/vary_cool/main.nf \
+    --publish_dir ${proj_dir}/run/output \
+    --input ${PWD}/metadata.csv \
+    --genome ${proj_dir}/data/fortune_primary_v1.4.0.fasta \
+    --skip_qc false \
+    --skip_trim false \
+    --skip_mark_dupe false \
+    --ploidy 2 \
+    --chunks 2 \
+    --aligner bwa_meme \
+    -profile slurm,custom \
+    -resume

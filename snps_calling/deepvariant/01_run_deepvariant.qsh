@@ -1,0 +1,68 @@
+#!/bin/bash
+# Run DeepVariant on a BAM file using a SLURM array job.
+# Each array task processes one BAM file.
+# Set --array=0-N where N = (number of BAM files - 1)
+#
+# Usage: sbatch --array=0-N 01_run_deepvariant.qsh
+#
+#SBATCH --job-name=deepvariant
+#SBATCH --nodes=1
+#SBATCH --ntasks=8
+#SBATCH --mem=64G
+#SBATCH -A YOUR_ACCOUNT
+#SBATCH --partition=YOUR_PARTITION
+#SBATCH --qos=YOUR_QOS
+#SBATCH -o %x_%A_%a.out
+#SBATCH -e %x_%A_%a.err
+#SBATCH --time=24:00:00
+#SBATCH --mail-type=BEGIN,END,FAIL
+#SBATCH --mail-user=your_email@institution.edu
+
+# --- Configuration ---
+# Directory containing input .bam files
+BAM_DIR="/path/to/bam_dir"
+
+# Reference genome (must be indexed)
+REF="/path/to/reference.fasta"
+
+# DeepVariant Singularity image
+IMAGE="/path/to/deepvariant.sif"
+
+# Output directory
+OUT_DIR="/path/to/output_dir"
+
+# Sequencing model type (WGS, WES, PACBIO, ONT_R104, HYBRID_PACBIO_ILLUMINA)
+MODEL_TYPE="WGS"
+
+# Number of shards (should match --ntasks)
+NUM_SHARDS=8
+
+# BAM filename suffix to strip for sample name
+BAM_SUFFIX=".bam"
+# ---------------------
+
+echo "Running on host: $(hostname)"
+echo "SLURM Job ID: $SLURM_JOB_ID"
+echo "SLURM Task ID: $SLURM_ARRAY_TASK_ID"
+
+BAM_LIST=($(ls -1 "${BAM_DIR}"/*.bam))
+BAM="${BAM_LIST[$SLURM_ARRAY_TASK_ID]}"
+BASENAME=$(basename "$BAM" "$BAM_SUFFIX")
+
+echo "Processing file: $BAM"
+echo "Output basename: $BASENAME"
+
+mkdir -p "${OUT_DIR}/${BASENAME}"
+
+singularity exec \
+  --bind "${BAM_DIR}:/input" \
+  --bind "$(dirname "$REF"):/ref" \
+  --bind "${OUT_DIR}:/output" \
+  "$IMAGE" \
+  /opt/deepvariant/bin/run_deepvariant \
+  --model_type="$MODEL_TYPE" \
+  --ref="/ref/$(basename "$REF")" \
+  --reads="/input/$(basename "$BAM")" \
+  --output_vcf="/output/${BASENAME}/${BASENAME}.vcf.gz" \
+  --output_gvcf="/output/${BASENAME}/${BASENAME}.g.vcf.gz" \
+  --num_shards="$NUM_SHARDS"
