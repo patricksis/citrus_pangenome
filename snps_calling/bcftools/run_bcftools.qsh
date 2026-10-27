@@ -10,7 +10,7 @@
 #SBATCH --error=logs/job.e%J
 #SBATCH --output=logs/job.o%J
 #SBATCH --mail-type=END,FAIL
-#SBATCH --mail-user=rkuster@utk.edu
+#SBATCH --mail-user=yourusername@email.com
 
 module load nextflow/23.10.0
 
