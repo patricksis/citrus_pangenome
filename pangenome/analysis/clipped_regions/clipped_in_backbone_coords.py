@@ -1,4 +1,10 @@
 #!/usr/bin/env python3
+# Identify regions of the reference backbone that a haplotype's walks do not
+# cover in the clipped pangenome graph, and report them in reference coordinates.
+# For each haplotype walk file, find the first and last backbone nodes it
+# traverses, merge those covered spans, and subtract them from the full
+# backbone span. The remaining gaps are the clipped regions (BED output).
+
 import re, glob, pandas as pd
 
 # loop over every backbone scaffold file
