@@ -1,4 +1,4 @@
-mport pandas as pd
+import pandas as pd
 from scipy.stats import kruskal
 from scipy import stats
 
