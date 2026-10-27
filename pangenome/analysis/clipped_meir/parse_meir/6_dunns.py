@@ -1,4 +1,4 @@
-mport pandas as pd
+import pandas as pd
 import scikit_posthocs as sp
 
 df = pd.read_csv("australis_SNP_MIER_with_missing_haps.tsv", sep="\t")
