@@ -1,10 +1,10 @@
 # Citrus Pangenome SNP Benchmarking
 
-A benchmarking study comparing SNP variant calling approaches using a citrus pangenome graph. Five calling strategies are evaluated across shared variant sites, with genotype concordance analysis between callers.
+A benchmarking study comparing SNP variant calling approaches using a citrus pangenome graph. Six calling strategies are evaluated across shared variant sites, with genotype concordance analysis between callers.
 
 ## Overview
 
-Short reads are mapped to a minigraph-cactus pangenome graph using `vg giraffe`. SNPs are then called via five strategies:
+Short reads are mapped either to a minigraph-cactus pangenome graph using `vg giraffe` or to a linear reference using BWA-MEM. SNPs are then called via six strategies:
 
 | Strategy | Mapping | Caller |
 |----------|---------|--------|
@@ -12,8 +12,8 @@ Short reads are mapped to a minigraph-cactus pangenome graph using `vg giraffe`.
 | vg-surject → GATK | vg giraffe → surject to BAM | GATK HaplotypeCaller |
 | vg-surject → bcftools | vg giraffe → surject to BAM | bcftools (via Nextflow) |
 | Linear GATK | BWA-MEM | GATK HaplotypeCaller |
+| Linear bcftools | BWA-MEM | bcftools |
 | DeepVariant | BWA-MEM | DeepVariant + GLnexus |
-
 Calls are then compared at the position and genotype level to benchmark pangenome-based calling against linear reference approaches.
 
 ## Dependencies
