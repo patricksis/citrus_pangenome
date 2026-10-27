@@ -1,5 +1,7 @@
 # Citrus Pangenome SNP Benchmarking
 
+Preprint: Kuster R, Sisler P, et al. (2026). *Benchmarking SNP-Calling Accuracy Against Known Citrus Pedigrees Reveals Pangenome Advantages Over Linear References.* bioRxiv. https://www.biorxiv.org/content/10.64898/2026.04.07.716967v1
+
 A benchmarking study comparing SNP variant calling approaches using a citrus pangenome graph. Six calling strategies are evaluated across shared variant sites, with genotype concordance analysis between callers.
 
 ## Overview
