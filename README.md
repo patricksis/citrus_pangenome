@@ -14,6 +14,7 @@ Short reads are mapped either to a minigraph-cactus pangenome graph using `vg gi
 | Linear GATK | BWA-MEM | GATK HaplotypeCaller |
 | Linear bcftools | BWA-MEM | bcftools |
 | DeepVariant | BWA-MEM | DeepVariant + GLnexus |
+
 Calls are then compared at the position and genotype level to benchmark pangenome-based calling against linear reference approaches.
 
 ## Dependencies
